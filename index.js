@@ -12,21 +12,25 @@ const htmlFile = argv._[0];
 
 (async function () {
 	try {
-		const browser = await puppeteer.launch();
-		const page = await browser.newPage();
-
-        const filePath = path.join(__dirname, htmlFile);
-        await page.goto(`file://${filePath}`);
-
-        const pdfFilePath = getPdfName(filePath);
-
-		await page.pdf({ path: pdfFilePath, format: 'letter' });
-
-		await browser.close();
+		await generatePdf(htmlFile);
 	} catch (e) {
 		console.log(e);
 	}
 })();
+
+async function generatePdf(htmlFile) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    const filePath = path.join(__dirname, htmlFile);
+    await page.goto(`file://${filePath}`);
+
+    const pdfFilePath = getPdfName(filePath);
+
+    await page.pdf({ path: pdfFilePath, format: 'letter' });
+
+    await browser.close();
+}
 
 function getPdfName(htmlFile) {
     const basename = path.basename(htmlFile, '.html');
