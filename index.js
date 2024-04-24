@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const fs = require('fs');
 const path = require('path');
 const chokidar = require('chokidar');
 const puppeteer = require('puppeteer');
@@ -15,7 +16,15 @@ const argv = require('yargs/yargs')(process.argv.slice(2))
     })
     .parse();
 
-const htmlFile = argv._[0];
+const htmlFilepath = path.resolve(path.normalize(argv._[0]));
+const workingDir = path.dirname(htmlFilepath);
+const pdfFilepath = getPdfPath(htmlFilepath);
+
+if (!fs.existsSync(htmlFilepath)) {
+    console.error(`Error: File not found: ${htmlFilepath}`);
+    process.exit(1);
+}
+
 const shouldWatch = argv.watch;
 
 (async function () {
