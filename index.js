@@ -42,14 +42,21 @@ const shouldWatch = argv.watch;
 	}
 })();
 
-async function generatePdf(htmlFile) {
+/**
+ * Given an absolute path to an html file, generate a pdf file in the same directory.
+ *
+ * @param {string} htmlFilepath - The absolute path to the html file.
+ *
+ * @returns {Promise<void>}
+ */
+async function generatePdf(htmlFilepath) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    const filePath = path.join(__dirname, htmlFile);
+    const filePath = path.join(htmlFilepath);
     await page.goto(`file://${filePath}`);
 
-    const pdfFilePath = getPdfName(filePath);
+    const pdfFilePath = getPdfPath(filePath);
 
     await page.pdf({ path: pdfFilePath, format: 'letter' });
 
