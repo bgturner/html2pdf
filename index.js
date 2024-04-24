@@ -56,7 +56,15 @@ async function generatePdf(htmlFile) {
     await browser.close();
 }
 
-function getPdfName(htmlFile) {
-    const basename = path.basename(htmlFile, '.html');
-    return path.join(__dirname, `${basename}.pdf`);
+/*
+ * Given an absolute path to an html file, return the absolute path to the pdf file.
+ *
+ * @param {string} htmlFilepath - The absolute path to the html file.
+ *
+ * @returns {string} - The absolute path to the pdf file.
+ */
+function getPdfPath(htmlFilepath) {
+    const basename = path.basename(htmlFilepath, '.html');
+    const dirname = path.dirname(htmlFilepath);
+    return path.join(dirname, `${basename}.pdf`);
 }
