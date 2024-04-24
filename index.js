@@ -46,19 +46,17 @@ const shouldWatch = argv.watch;
  * Given an absolute path to an html file, generate a pdf file in the same directory.
  *
  * @param {string} htmlFilepath - The absolute path to the html file.
+ * @param {string} [pdfFilepath] - The absolute path to the pdf file.
  *
  * @returns {Promise<void>}
  */
-async function generatePdf(htmlFilepath) {
+async function generatePdf(htmlFilepath, pdfFilepath) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    const filePath = path.join(htmlFilepath);
-    await page.goto(`file://${filePath}`);
+    await page.goto(`file://${htmlFilepath}`);
 
-    const pdfFilePath = getPdfPath(filePath);
-
-    await page.pdf({ path: pdfFilePath, format: 'letter' });
+    await page.pdf({ path: pdfFilepath, format: 'letter' });
 
     await browser.close();
 }
