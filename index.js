@@ -7,11 +7,11 @@ const puppeteer = require('puppeteer');
 const argv = require('yargs/yargs')(process.argv.slice(2))
     .usage('Usage: $0 <html-file>')
     .example('$0 index.html', 'Convert index.html to index.pdf')
-    .example('$0 index.html -w', 'Watch for changes to index.html and regenerate index.pdf')
+    .example('$0 index.html -w', 'Generate a pdf called index.pdf from index.html. Watch for changes to any files in the same directory as index.html and regenerate the pdf when changes are detected.')
     .demandCommand(1)
     .option('watch', {
         alias: 'w',
-        describe: 'Watch the html file for changes and regenerate the pdf',
+        describe: 'Watch for changes to files in the same directory as the html file and regenerate the pdf when changes are detected.',
         type: 'boolean'
     })
     .parse();
