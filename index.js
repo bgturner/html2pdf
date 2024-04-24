@@ -30,19 +30,24 @@ const shouldWatch = argv.watch;
 (async function () {
 	try {
         if (shouldWatch) {
-            chokidar.watch(htmlFile)
-                .on('ready', () => console.log(`Watching for changes to ${htmlFile}...`))
-                .on('add', generatePdf)
-                .on('change', (htmlFile) => {
-                    console.log('File changed. Regenerating pdf...');
-                    generatePdf(htmlFile);
+            chokidar.watch(workingDir, { ignored: pdfFilepath})
+                .on('ready', () => console.log(`Watching for changes in ${workingDir}...`))
+                .on('add', () => generatePdf(htmlFilepath, pdfFilepath))
+                .on('change', (path) => {
+                    const logDateTimestamp = new Date().toISOString();
+                    console.log(`[${logDateTimestamp}] Regenerating pdf. File changed: ${path}`);
+                    generatePdf(htmlFilepath, pdfFilepath);
                 })
-                .on('unlink', () => {
-                    console.log('File removed. Stopping watching...');
-                    process.exit(1);
+                .on('unlink', (path) => {
+                    if (path === htmlFilepath) {
+                        console.log('Exiting... Html file removed: ', path);
+                        process.exit(1);
+                    }
+                    console.log('Regenerating pdf. File removed: ', path);
+                    generatePdf(htmlFilepath, pdfFilepath);
                 });
         } else {
-            await generatePdf(htmlFile);
+            await generatePdf(htmlFilepath, pdfFilepath);
             process.exit(0);
         }
 	} catch (e) {
